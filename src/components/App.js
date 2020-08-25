@@ -4,15 +4,17 @@ import { Route, Link, withRouter } from "react-router-dom";
 import Home from "./Home";
 import Signup from "./Signup";
 import Login from "./Login";
+import UserDetail from "./UserDetail";
 import axios from "axios";
+import jwt_decode from "jwt-decode";
 const backendURL = "http://localhost:3000";
 
 class App extends React.PureComponent {
-  constructor(props) {
-    super();
-  }
+  state = {
+    currentUser: null,
+  };
 
-  async handleSignup(e) {
+  handleSignup = async (e) => {
     e.preventDefault();
     let response = await axios({
       method: "post",
@@ -26,9 +28,9 @@ class App extends React.PureComponent {
 
     document.cookie = `jwt=${response.data.token}`;
     console.log(response);
-  }
+  };
 
-  async handleLogin(e) {
+  handleLogin = async (e) => {
     e.preventDefault();
     let response = await axios({
       method: "post",
@@ -39,13 +41,19 @@ class App extends React.PureComponent {
       },
     });
 
-    document.cookie = `jwt=${response.data.token}`;
-    console.log(response);
-  }
+    let token = response.data.token;
+
+    localStorage.setItem("jwt", `${token}`);
+    let decoded = jwt_decode(token);
+
+    this.setState({ currentUser: decoded });
+    this.props.history.push(`/users/${this.state.currentUser.id}`);
+    console.log(decoded);
+  };
 
   handleLogout = () => {
-    console.log("clear cookie");
-    document.cookie = "jwt=null";
+    localStorage.removeItem("jwt");
+    this.setState({ currentUser: null });
     this.props.history.push("/");
   };
   render() {
@@ -58,6 +66,9 @@ class App extends React.PureComponent {
           <Link to="/" onClick={this.handleLogout}>
             Logout
           </Link>
+          {this.state.currentUser
+            ? `Welcome, ${this.state.currentUser.username}`
+            : ""}
         </nav>
         <main>
           <Route exact path="/" render={(routerProps) => <Home />} />
@@ -70,6 +81,10 @@ class App extends React.PureComponent {
           <Route
             path="/login"
             render={(routerProps) => <Login handleLogin={this.handleLogin} />}
+          />
+          <Route
+            path="/users/:id"
+            render={(routerProps) => <UserDetail {...this.state} />}
           />
         </main>
       </div>
