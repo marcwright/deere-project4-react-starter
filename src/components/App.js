@@ -19,7 +19,7 @@ class App extends React.PureComponent {
     e.preventDefault();
     let response = await axios({
       method: "post",
-      url: `${backendURL}/auth/signup`,
+      url: `${backendUrl}/auth/signup`,
       data: {
         name: e.target.name.value,
         username: e.target.username.value,
@@ -35,7 +35,7 @@ class App extends React.PureComponent {
     e.preventDefault();
     let response = await axios({
       method: "post",
-      url: `${backendURL}/auth/login`,
+      url: `${backendUrl}/auth/login`,
       data: {
         username: e.target.username.value,
         password: e.target.password.value,
