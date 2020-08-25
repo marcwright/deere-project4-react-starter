@@ -7,7 +7,8 @@ import Login from "./Login";
 import UserDetail from "./UserDetail";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-const backendURL = "http://localhost:3000";
+let backendUrl =
+  process.env.REACT_APP_BACKEND_APP_URL || "http://localhost:3000";
 
 class App extends React.PureComponent {
   state = {
