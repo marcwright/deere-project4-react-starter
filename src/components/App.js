@@ -28,8 +28,11 @@ class App extends React.PureComponent {
       },
     });
 
-    document.cookie = `jwt=${response.data.token}`;
-    console.log(response);
+    localStorage.setItem("jwt", `${token}`);
+    let decoded = jwt_decode(token);
+
+    this.setState({ currentUser: decoded });
+    this.props.history.push(`/users/${this.state.currentUser.id}`);
   };
 
   handleLogin = async (e) => {
