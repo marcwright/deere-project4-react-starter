@@ -27,7 +27,7 @@ class App extends React.PureComponent {
         password: e.target.password.value,
       },
     });
-
+    let token = response.data.token;
     localStorage.setItem("jwt", `${token}`);
     let decoded = jwt_decode(token);
 
